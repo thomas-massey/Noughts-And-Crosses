@@ -4,9 +4,56 @@
 #include <iostream>
 
 class Game {
-	public:
-		// Create a board attribute
-		char board[3][3] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'} };
+public:
+	// Create a board attribute
+	char board[3][3] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'} };
+
+	// Create a method to print the board
+	void printBoard() {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				std::cout << board[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
+};
+		
+// Make Terminal a subclass of Game
+class Terminal : public Game {
+public:
+	void register_player_move(bool player_1_turn, Game game) {
+		if (player_1_turn) {
+			// Ask where they want to place their X
+			bool no_valid_choice = true;
+			while (no_valid_choice) {
+				std::cout << "Where do you want to place your X?" << std::endl;
+				char choice;
+				std::cin >> choice;
+				// Check if the choice is in range
+				if (choice >= '1' && choice <= '9') {
+					// Place the X in the top left
+					// Get the array position from the square number
+					int row = (choice - '1') / 3;
+					int column = (choice - '1') % 3;
+					game.board[row][column] = 'X';
+					no_valid_choice = false;
+				}
+				else {
+					std::cout << "Invalid choice, please enter a number between 1 and 9." << std::endl;
+				}
+				player_1_turn = false;
+			}
+		}
+		else {
+			// AI will pick random square
+			int move = rand() % 9 + 1;
+			int row = (move - '1') / 3;
+			int column = (move - '1') % 3;
+			game.board[row][column] = 'O';
+			player_1_turn = true;
+		};
+	};
 };
 	
 int main()
@@ -32,10 +79,9 @@ int main()
 			std::cout << "Invalid choice, please enter either 'G' or 'T'." << std::endl;
 		}
 	}
-	// Now instantiate a Game.
-	Game game;
 	// Now go diffrent paths dependent on wether the user wants to play with a GUI or a terminal
 	if (not GUI) {
+		Terminal game;
 		// Now do the pregame variables
 		// Ask if it is against player 2 or AI
 		bool no_valid_choice = true;
@@ -81,19 +127,52 @@ int main()
 		}
 		// Now start the game loop
 		bool game_over = false;
+
+		// Add a turn player_1_turn variable
+		bool player_1_turn = player_1_first;
+
+		// Print board state
+		game.show_board();
+
+		// Now do the first move details
+		if (player_1_first) {
+			// Ask where they want to place their X
+			bool no_valid_choice = true;
+			while (no_valid_choice) {
+				std::cout << "Where do you want to place your X?" << std::endl;
+				char choice;
+				std::cin >> choice;
+				// Check if the choice is in range
+				if (choice >= '1' && choice <= '9') {
+					// Place the X in the top left
+					// Get the array position from the square number
+					int row = (choice - '1') / 3;
+					int column = (choice - '1') % 3;
+					game.board[row][column] = 'X';
+					no_valid_choice = false;
+				} else {
+					std::cout << "Invalid choice, please enter a number between 1 and 9." << std::endl;
+				}
+			}
+			player_1_first = false;
+		}
+		else {
+			// AI will pick random square
+			int move = rand() % 9 + 1;
+			int row = (move - '1') / 3;
+			int column = (move - '1') % 3;
+			game.board[row][column] = 'O';
+			player_1_turn = true;
+		}
+		
 		while (not game_over) {
 			
 
 			// Print out the board
-			std::cout << "The board is as follows:" << std::endl;
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					std::cout << game.board[i][j] << " ";
-				}
-				std::cout << std::endl;
-			}
-
+			game.printBoard();
 			
+			// Use the terminal subclass of Game to do the rest of the game
+			game.
 		}
 	}
 }
