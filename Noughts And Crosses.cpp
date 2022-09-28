@@ -36,13 +36,64 @@ int main()
 	Game game;
 	// Now go diffrent paths dependent on wether the user wants to play with a GUI or a terminal
 	if (not GUI) {
-		// Print out the board
-		std::cout << "The board is as follows:" << std::endl;
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				std::cout << game.board[i][j] << " ";
+		// Now do the pregame variables
+		// Ask if it is against player 2 or AI
+		bool no_valid_choice = true;
+		bool against_AI;
+		while (no_valid_choice) {
+			std::cout << "Do you want to play against another player or an AI? (P/A)" << std::endl;
+			char choice;
+			std::cin >> choice;
+			if (choice == 'P' || choice == 'p') {
+				// Run the player vs player version
+				no_valid_choice = false;
+				against_AI = false;
 			}
-			std::cout << std::endl;
+			else if (choice == 'A' || choice == 'a') {
+				// Run the player vs AI version
+				no_valid_choice = false;
+				against_AI = true;
+			}
+			else {
+				std::cout << "Invalid choice, please enter either 'P' or 'A'." << std::endl;
+			}
+		}
+		// Now ask if Player 1 goes first
+		bool no_valid_choice = true;
+		bool player_1_first;
+		while (no_valid_choice) {
+			std::cout << "Do you want to go first? (Y/N)" << std::endl;
+			char choice;
+			std::cin >> choice;
+			if (choice == 'Y' || choice == 'y') {
+				// Run the player vs player version
+				no_valid_choice = false;
+				player_1_first = true;
+			}
+			else if (choice == 'N' || choice == 'n') {
+				// Run the player vs AI version
+				no_valid_choice = false;
+				player_1_first = false;
+			}
+			else {
+				std::cout << "Invalid choice, please enter either 'Y' or 'N'." << std::endl;
+			}
+		}
+		// Now start the game loop
+		bool game_over = false;
+		while (not game_over) {
+			
+
+			// Print out the board
+			std::cout << "The board is as follows:" << std::endl;
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					std::cout << game.board[i][j] << " ";
+				}
+				std::cout << std::endl;
+			}
+
+			
 		}
 	}
 }
