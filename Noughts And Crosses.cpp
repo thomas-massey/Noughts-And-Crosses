@@ -8,8 +8,50 @@ public:
 	// Create a board attribute
 	char board[3][3] = { {'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'} };
 
+	// Winning scenarios
+	int winning_positions[8][3][3] = {
+		{{1,1,1},
+		{0,0,0},
+		{0,0,0}},
+
+		{{0,0,0},
+		{1,1,1},
+		{0,0,0}},
+
+		{{0,0,0},
+		{0,0,0},
+		{1,1,1}},
+
+		{{1,0,0},
+		{1,0,0},
+		{1,0,0}},
+
+		{{0,1,0},
+		{0,1,0},
+		{0,1,0}},
+
+		{{0,0,1},
+		{0,0,1},
+		{0,0,1}},
+
+		{{1,0,0},
+		{0,1,0},
+		{0,0,1}},
+
+		{{0,0,1},
+		{0,1,0},
+		{1,0,0}}
+
+	};
+
+	// Players turn
+	bool player_1_turn;
+
+	// Current winner
+	bool player_1_has_won;
+
 	// Create a method to print the board
-	void printBoard() {
+	void show_board() {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				std::cout << board[i][j] << " ";
@@ -17,13 +59,38 @@ public:
 			std::cout << std::endl;
 		}
 	}
+
+	// Create a method to check if the game is over
+	bool check_for_win() {
+		for (int i = 0; i < 8; i++) {
+			int xsum = 0;
+			int osum = 0;
+			// Now compare the board to the current board
+			for (int j = 0; j < 9; j++) {
+				if ((winning_positions[i][(j / 3)][j % 3] = 1) and (board[(j / 3)][j % 3] = 'X')) {
+					xsum += 1;
+				}
+				else if ((winning_positions[i][(j / 3)][j % 3] = 1) and (board[(j / 3)][j % 3] = 'O')) {
+					osum += 1;
+				}
+			}
+			if (xsum == 3) {
+				bool player_1_has_won = true;
+			}
+			else if (osum == 3) {
+				bool player_1_has_won = false;
+			}
+		}
+	}
 };
 		
 // Make Terminal a subclass of Game
 class Terminal : public Game {
 public:
-	void register_player_move(bool player_1_turn, Game game) {
+	void register_player_move() {
 		if (player_1_turn) {
+			// Show the board to the player
+			show_board();
 			// Ask where they want to place their X
 			bool no_valid_choice = true;
 			while (no_valid_choice) {
@@ -36,21 +103,23 @@ public:
 					// Get the array position from the square number
 					int row = (choice - '1') / 3;
 					int column = (choice - '1') % 3;
-					game.board[row][column] = 'X';
+					board[row][column] = 'X';
 					no_valid_choice = false;
 				}
 				else {
 					std::cout << "Invalid choice, please enter a number between 1 and 9." << std::endl;
 				}
-				player_1_turn = false;
 			}
-		}
-		else {
+			player_1_turn = false;
+			system("cls");
+			
+		} else {
 			// AI will pick random square
-			int move = rand() % 9 + 1;
-			int row = (move - '1') / 3;
-			int column = (move - '1') % 3;
-			game.board[row][column] = 'O';
+			int move = rand() % 9;
+			int row = move / 3;
+			int column = move % 3;
+			board[row][column] = 'O';
+			std::cout << "The AI has placed an O in square " << move+1 << std::endl <<std::endl << std::endl;
 			player_1_turn = true;
 		};
 	};
@@ -105,7 +174,7 @@ int main()
 			}
 		}
 		// Now ask if Player 1 goes first
-		bool no_valid_choice = true;
+		no_valid_choice = true;
 		bool player_1_first;
 		while (no_valid_choice) {
 			std::cout << "Do you want to go first? (Y/N)" << std::endl;
@@ -127,52 +196,23 @@ int main()
 		}
 		// Now start the game loop
 		bool game_over = false;
-
-		// Add a turn player_1_turn variable
-		bool player_1_turn = player_1_first;
+		
+		game.player_1_turn = player_1_first;
 
 		// Print board state
 		game.show_board();
 
 		// Now do the first move details
-		if (player_1_first) {
-			// Ask where they want to place their X
-			bool no_valid_choice = true;
-			while (no_valid_choice) {
-				std::cout << "Where do you want to place your X?" << std::endl;
-				char choice;
-				std::cin >> choice;
-				// Check if the choice is in range
-				if (choice >= '1' && choice <= '9') {
-					// Place the X in the top left
-					// Get the array position from the square number
-					int row = (choice - '1') / 3;
-					int column = (choice - '1') % 3;
-					game.board[row][column] = 'X';
-					no_valid_choice = false;
-				} else {
-					std::cout << "Invalid choice, please enter a number between 1 and 9." << std::endl;
-				}
-			}
-			player_1_first = false;
-		}
-		else {
-			// AI will pick random square
-			int move = rand() % 9 + 1;
-			int row = (move - '1') / 3;
-			int column = (move - '1') % 3;
-			game.board[row][column] = 'O';
-			player_1_turn = true;
-		}
+		game.register_player_move();
 		
 		while (not game_over) {
 			
-
-			// Print out the board
-			game.printBoard();
-			
 			// Use the terminal subclass of Game to do the rest of the game
-			game.
+			game.register_player_move();
+			
+			game.check_for_win();
+
+			
 		}
 	}
 }
