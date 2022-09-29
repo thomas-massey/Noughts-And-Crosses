@@ -52,33 +52,36 @@ public:
 
 	// Create a method to print the board
 	void show_board() {
+		std::cout << "-------------" << std::endl;
 		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				std::cout << board[i][j] << " ";
-			}
-			std::cout << std::endl;
+			std::cout << "| " << board[i][0] << " | " << board[i][1] << " | " << board[i][2] << " |" << std::endl;
+			std::cout << "-------------" << std::endl;
 		}
-	}
+	};
 
 	// Create a method to check if the game is over
-	bool check_for_win() {
+	void check_for_win() {
 		for (int i = 0; i < 8; i++) {
 			int xsum = 0;
 			int osum = 0;
 			// Now compare the board to the current board
 			for (int j = 0; j < 9; j++) {
-				if ((winning_positions[i][(j / 3)][j % 3] = 1) and (board[(j / 3)][j % 3] = 'X')) {
+				if ((winning_positions[i][(j / 3)][j % 3] == 1) and (board[(j / 3)][j % 3] == 'X')) {
 					xsum += 1;
 				}
-				else if ((winning_positions[i][(j / 3)][j % 3] = 1) and (board[(j / 3)][j % 3] = 'O')) {
+				else if ((winning_positions[i][(j / 3)][j % 3] == 1) and (board[(j / 3)][j % 3] == 'O')) {
 					osum += 1;
 				}
 			}
 			if (xsum == 3) {
 				bool player_1_has_won = true;
+				std::cout << "Player 1 has won!" << std::endl;
+				system("pause");
 			}
 			else if (osum == 3) {
 				bool player_1_has_won = false;
+				std::cout << "Player 2 has won!" << std::endl;
+				system("pause");
 			}
 		}
 	}
@@ -97,8 +100,8 @@ public:
 				std::cout << "Where do you want to place your X?" << std::endl;
 				char choice;
 				std::cin >> choice;
-				// Check if the choice is in range
-				if (choice >= '1' && choice <= '9') {
+				// Check if the choice is in range and the square isnt occupied by comparing it to its number in the cell
+				if ((choice >= '1' && choice <= '9') and (choice == board[(choice - '1') / 3][(choice - '1') % 3])) {
 					// Place the X in the top left
 					// Get the array position from the square number
 					int row = (choice - '1') / 3;
@@ -107,20 +110,28 @@ public:
 					no_valid_choice = false;
 				}
 				else {
-					std::cout << "Invalid choice, please enter a number between 1 and 9." << std::endl;
+					std::cout << "Invalid choice, please enter a number between 1 and 9 and then pick an availiable square." << std::endl;
 				}
 			}
 			player_1_turn = false;
 			system("cls");
 			
-		} else {
+		}
+		else {
 			// AI will pick random square
-			int move = rand() % 9;
-			int row = move / 3;
-			int column = move % 3;
-			board[row][column] = 'O';
-			std::cout << "The AI has placed an O in square " << move+1 << std::endl <<std::endl << std::endl;
-			player_1_turn = true;
+			bool no_valid_choice = true;
+			int move, row, column;
+			while (no_valid_choice) {
+				move = rand() % 9;
+				row = move / 3;
+				column = move % 3;
+				if (board[row][column] == (move + '1')) {
+					board[row][column] = 'O';
+					no_valid_choice = false;
+					std::cout << "The AI has placed an O in square " << move + 1 << std::endl << std::endl << std::endl;
+					player_1_turn = true;
+				}
+			}
 		};
 	};
 };
@@ -198,9 +209,9 @@ int main()
 		bool game_over = false;
 		
 		game.player_1_turn = player_1_first;
-
-		// Print board state
-		game.show_board();
+		
+		// Clear the screen
+		system("cls");
 
 		// Now do the first move details
 		game.register_player_move();
