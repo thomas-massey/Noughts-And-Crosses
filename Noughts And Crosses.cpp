@@ -86,6 +86,10 @@ public:
 		}
 	}
 };
+
+class Graphical : public Game {
+public:
+};
 		
 // Make Terminal a subclass of Game
 class Terminal : public Game {
@@ -142,7 +146,7 @@ int main()
 	bool no_valid_choice = true;
 	bool GUI;
 	while (no_valid_choice) {
-		std::cout << "Do you want to play with a GUI or a terminal? (G/T)" << std::endl;
+		std::cout << "Do you want to play with a GUI (developing) or a terminal? (G/T)" << std::endl;
 		char choice;
 		std::cin >> choice;
 		if (choice == 'G' || choice == 'g') {
@@ -160,7 +164,7 @@ int main()
 		}
 	}
 	// Now go diffrent paths dependent on wether the user wants to play with a GUI or a terminal
-	if (not GUI) {
+	if (not GUI ) {
 		Terminal game;
 		// Now do the pregame variables
 		// Ask if it is against player 2 or AI
@@ -225,5 +229,12 @@ int main()
 
 			
 		}
+	}
+	else {
+		// This is the GUI method
+		// First start the game
+		Graphical game;
+		// Now open a window
+		
 	}
 }
